@@ -1,6 +1,7 @@
 # smartfit
-Afin de faire fonctionné l'application veuillez faire : 
-from tkinter import *
+Afin de faire fonctionné l'application veuillez installez python ainsi qu'un interpreteur tel que visual code studio et installez sqlite3.
+Dans votre interpreteur python rentrer ces commandes :
+import tkinter
 import sqlite3
 
-Télécharger l'image afin de l'afficher dans la page d'acceuil
+Télécharger l'image afin de l'afficher dans la page d'acceuil : muscu.gif 
