@@ -9,14 +9,15 @@ Created on Wed Mar 11 09:43:21 2020
 
 import sqlite3
 
+# fonction permettant d'ouvrir les données sélectionné dans la base de données en utilisant des commandes SQL 
 def open_database():
       conn = sqlite3.connect('Smartfit_db')
       cursor = conn.cursor()
-    
+#cest la commande SELECT qui me permet de lire les données , ensuite je choisis les information dans la table qui m'interesse , et je précise la table avec FROM
       cursor.execute("""SELECT id, nom_exercice, muscle_cibler, niveau_difficulte FROM exercices""")
       exercices = cursor.fetchall()
       print(exercices)
- 
+# fonction permettant de supprimer les tables et leur contenues , bien pratique lors de mes test pour supprimer les variables et éviter les erreurs betes 
 def clean_database():
     
       conn = sqlite3.connect('Smartfit_db')
@@ -63,15 +64,15 @@ def clean_database():
       DROP TABLE suivi_perso
       """)
       conn.commit()
-
+#la fonction essentiel qui me permet de créer chaque table et de choisir son architecture
 def create_table():
     
-
+#PRIMARY KEY AUTOINCREMENT UNIQUE me permet de creer un id qui seras une clef primaire , autoincrémenté et unique
     conn = sqlite3.connect('Smartfit_db')
     cursor = conn.cursor()
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS profil(
-         id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+         id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,  
          name TEXT,
          age INTERGER,
          poid FLOAT,
@@ -85,9 +86,11 @@ def create_table():
          mdp TEXT
     )
     """)
+# Grace a la commande  id_exercices INTEGER REFERENCES exercices (id_exercices), je met la clef primaire de la table exercices en tant que clef étrangere dans la table corp 
     cursor.execute("""
     CREATE TABLE IF NOT EXISTS corps(
          id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE,
+         id_exercices INTEGER REFERENCES exercices (id_exercices),
          parti_corp TEXT
     )
     """)
@@ -126,7 +129,7 @@ def create_table():
     conn.commit()
 
 
-
+#cette fonciton ma permit de mettre en place mes tests , en ajoutant les données à mes tables créer au préalable , les exercices , les muscles ....
 def insert_datas():
     """
     This function add test datas to the database
@@ -170,7 +173,19 @@ def insert_datas():
     INSERT INTO exercices(nom_exercice, muscle_cibler, niveau_difficulte) VALUES(?, ?, ?)""", ("traction", "dorsaux", "intermediaire"))
     conn.commit()
     
-
+#j'ai donc creer une fonction pour tester une commande un peu plus pousser en sqlite3 , en fesant une rechercher spécifique en utilisant des innerjoin pour me concentré sur les parametres qui m'interessent 
+    def demo():
+    
+      conn = sqlite3.connect('Smartfit_db')
+      cursor = conn.cursor()
+    
+      cursor.execute("""
+SELECT * FROM exercices
+INNER JOIN corps ON exercices.id_exercices = corps.id_exercices
+WHERE corps.parti_corp = 'bras' 
+""")
+      exercices = cursor.fetchall()
+      print(exercices)
     
 if __name__ == '__main__' :
     
@@ -178,7 +193,8 @@ if __name__ == '__main__' :
 
 
 
-    
+   
+     
     create_table()
     
     insert_datas()
@@ -186,9 +202,4 @@ if __name__ == '__main__' :
     open_database()
     
     clean_database()
-    
-
-   
-
-    
     
